@@ -13,6 +13,7 @@ public class Truck {
     
     private final int id;
     private final int maxLoad;
+    private int load;
     
     /**
      * Cria um caminhão.
@@ -25,6 +26,7 @@ public class Truck {
     {
         this.id = id;
         this.maxLoad = maxLoad;
+        this.load = maxLoad;
     }
     
     /**
@@ -47,5 +49,20 @@ public class Truck {
     public int getMaxLoad()
     {
         return maxLoad;
+    }
+    
+    public int getLoad()
+    {
+        return load;
+    }
+    
+    public void sub(int value)
+    {
+        load -= value;
+    }
+    
+    public void clear()
+    {
+        load = 0;
     }
 }

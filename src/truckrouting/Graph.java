@@ -18,6 +18,7 @@ public class Graph {
     
     private final int[][] points;
     private final Point init;
+    private int truckCapacity;
     
     /**
      * Carrega um grafo de um arquivo.
@@ -29,8 +30,9 @@ public class Graph {
         File file = new File(dir);
         Scanner scan = new Scanner(file);
         int size = 0;
-        int capacity = 0;
+        int[] demand = null;
         int[][] mat = null;
+        Graph g = null;
         
         while(scan.hasNext())
         {
@@ -43,7 +45,19 @@ public class Graph {
             }
             else if(str.contains("CAPACITY"))
             {
-                capacity = Integer.parseInt(str.substring(10));
+                 g = new Graph(size);
+                 g.truckCapacity = Integer.parseInt(str.substring(10));
+            }
+            else if(str.contains("DEMAND_SECTION"))
+            {
+                demand = new int[size];
+                
+                for(int i = 0; i < size; i++)
+                {
+                    scan.nextInt();
+                    demand[i] = scan.nextInt();
+                }
+                
             }
             else if(str.contains("EDGE_WEIGHT_SECTION"))
             {
@@ -57,7 +71,6 @@ public class Graph {
             }
         }
         
-        Graph g = new Graph(size);
         Point[] points = new Point[size];
         Point p0, p1;
         
@@ -65,7 +78,7 @@ public class Graph {
         
         for(int i = 1; i < size; i++)
         {
-            points[i] = new Point(i, true);
+            points[i] = new Point(i, demand[i], true);
         }
         
         for(int i = 0; i < size; i++)
@@ -92,7 +105,7 @@ public class Graph {
      */
     public Graph(int size)
     {
-        init = new Point(0, false);
+        init = new Point(0,0, false);
         points = new int[size][size];
     }
     
@@ -105,6 +118,11 @@ public class Graph {
     public int distance(Point p0, Point p1)
     {
         return points[p0.getId()][p1.getId()];
+    }
+    
+    public int vertexNumber()
+    {
+        return points.length;
     }
     
     /**
@@ -147,6 +165,11 @@ public class Graph {
             printPoint(p);
             printAdjs(adjs, p);
         }
+    }
+    
+    public int getTruckCapacity()
+    {
+        return truckCapacity;
     }
     
     public void showMatrix()
