@@ -22,6 +22,8 @@ public class Main {
         Graph g = Graph.loadFromFile("P-n16-k8.txt");
         Route route;
         ArrayList<Route> routeList = new ArrayList<>();
+        routeList.ensureCapacity(g.vertexNumber());
+        long time = System.nanoTime();
         g.getInit().visit();
         
         while(visitedPoints < g.vertexNumber())
@@ -31,9 +33,10 @@ public class Main {
             route.show();
         }
         
-        routeList.get(5).show();
-        routeList.get(5).reInsertion(1, 3);
-        routeList.get(5).show();
+        boolean ok = routeList.get(2).reInsertion(1, 2, routeList.get(1));
+        routeList.get(2).show();
+        routeList.get(1).show();
+        System.out.println(ok ? "Efetuou" : "Não efetuou");
         /*boolean certo = routeList.get(5).towOpt(1, 2, 0, 3);
         System.out.println(certo ? "trocou" : "não trocou");
         routeList.get(5).show();*/
@@ -43,7 +46,7 @@ public class Main {
         System.out.println(routeList.get(5).getLength());
         
         System.out.println(certo ? "trocou" : "não trocou");*/
-        
+        System.out.println("Duration: " + (double)(System.nanoTime() - time) / 1000_000_000d + 's');
     }
     
     private static Route createRoute(Graph graph, int truckCapacity)

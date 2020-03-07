@@ -75,13 +75,6 @@ public class Route {
         return length;
     }
     
-    public void calculateLenght(){
-        this.length = 0;
-        for(int i = 1; i < way.size(); i++){
-            this.length += graph.distance(way.get(i), way.get(i-1));
-        }
-    }
-    
     public void show()
     {
         String str = "";
@@ -96,57 +89,62 @@ public class Route {
     
     /**
      * Troca 2 vértices de lugar.
-     * @param x primeiro vértice
-     * @param y segundo vértice
-     * @return 
+     * @param x primeiro vértice(pertence à esta rota)
+     * @param y segundo vértice(pertence a outra rota especificada)
+     * @param other A outra rota com quem será feita à troca.
+     * @return se o movimento foi efetuado
      */
-    public boolean swap(int x, int y)
+    public boolean swap(int x, int y, Route other)
     {
         Point a, ar, al;
         Point b, br, bl;
         int d0, d1;
         
         a = way.get(x);
-        ar = way.get(x + 1);
-        al = way.get(x - 1);
-        b = way.get(y);
-        br = way.get(y + 1);
-        bl = way.get(y - 1);
+        //se o ponto for o último, ponto da direita ignorado
+        ar = x < way.size() - 1 ? way.get(x + 1) : way.get(x);
+        //se o ponto for o primeiro, ponto da esquerda ignorado
+        al = x > 0 ? way.get(x - 1) : way.get(x);
+        
+        b = other.way.get(y);
+        //se o ponto for o último, ponto da direita ignorado
+        br = y < other.way.size() - 1 ? other.way.get(y + 1) : other.way.get(y);
+        //se o ponto for o primeiro, ponto da esquerda ignorado
+        bl = y > 0 ? other.way.get(y - 1) : other.way.get(y);
         
         d0 = graph.distance(a, ar) + graph.distance(a, al) +
              graph.distance(b, br) + graph.distance(b, bl);
         
-        swapArrayList(x, y, way);
+        //carga insuficiente
+        if(other.truck.getLoad() < a.getDemanda() - b.getDemanda() || truck.getLoad() < b.getDemanda() - a.getDemanda())
+            return false;
+        
+        swapArrayList(x, y, other.way);
         
         a = way.get(x);
-        ar = way.get(x + 1);
-        al = way.get(x - 1);
-        b = way.get(y);
-        br = way.get(y + 1);
-        bl = way.get(y - 1);
+        //se o ponto for o último, ponto da direita ignorado
+        ar = x < way.size() - 1 ? way.get(x + 1) : way.get(x);
+        //se o ponto for o primeiro, ponto da esquerda ignorado
+        al = x > 0 ? way.get(x - 1) : way.get(x);
+        
+        b = other.way.get(y);
+        //se o ponto for o último, ponto da direita ignorado
+        br = y < other.way.size() - 1 ? other.way.get(y + 1) : other.way.get(y);
+        //se o ponto for o primeiro, ponto da esquerda ignorado
+        bl = y > 0 ? other.way.get(y - 1) : other.way.get(y);
         
         d1 = graph.distance(a, ar) + graph.distance(a, al) +
              graph.distance(b, br) + graph.distance(b, bl);
         
-        System.out.println("d0: " + d0);
-        System.out.println("d1: " + d1);
-        
         if(d1 < d0)
         {
+            length += d1 - d0;
             return true;
         }
         
-        swapArrayList(x, y, way);
+        swapArrayList(x, y, other.way);
         
         return false;
-    }
-    
-    /**
-     * 
-     */
-    public void reinsertion()
-    {
-        
     }
     
     /**
@@ -155,9 +153,9 @@ public class Route {
      * @param ay segundo vértice da primeira aresta.
      * @param bx primeiro vértice da segunda aresta.
      * @param by segundo vértice da segunda aresta.
-     * @return 
+     * @return se o movimento foi efetuado
      */
-    public boolean towOpt(int ax, int ay, int bx, int by)
+    public boolean twoOpt(int ax, int ay, int bx, int by)
     {
         Point a;
         Point b;
@@ -173,8 +171,6 @@ public class Route {
         
         d0 = graph.distance(a, b) + graph.distance(c, d);
         
-        System.out.println("D0: "+d0);
-        
         swapArrayList(ay, by, way);
         
         a = way.get(ax);
@@ -183,7 +179,6 @@ public class Route {
         d = way.get(by);
         
         d1 = graph.distance(a, b) + graph.distance(c, d);
-        System.out.println("D1: "+d1);
         
         if(d1 < d0){
             return true;
@@ -195,30 +190,53 @@ public class Route {
         
     }
     
-    public boolean reInsertion(int point, int endPosition){
+    /**
+     * Remove e insere novamente o ponto em outra rota.
+     * @param point O índice do ponto na rota
+     * @param endPosition O novo índice do ponto
+     * @param other A rota que receberá(ou  não) o ponto
+     * 
+     * @return Se o movimento foi efetuado
+     */
+    public boolean reInsertion(int point, int endPosition, Route other){
         
-        calculateLenght();
-        int custoAntes = this.length;
+        int d0, d1;
         
         Point a = way.get(point);
+        Point al = point > 0 ? way.get(point - 1) : way.get(point);
+        Point ar = point < way.size() - 1 ? way.get(point + 1) : way.get(point);
+        d0 = graph.distance(al, a) + graph.distance(a, ar);
+        
+        //carga insuficiente
+        if(other.truck.getLoad() < a.getDemanda())
+            return false;
         
         way.remove(point);
-        way.add(endPosition, a);
-        calculateLenght();
-
-        if(custoAntes > this.length){
+        other.way.add(endPosition, a);
+        
+        al = endPosition > 0 ? other.way.get(endPosition - 1) : other.way.get(endPosition);
+        ar = endPosition < other.way.size() - 1 ? other.way.get(endPosition + 1) : other.way.get(endPosition);
+        d1 = graph.distance(al, a) + graph.distance(a, ar);
+        
+        if(d1 < d0){
+            length += d1 - d0;
             return true;
         }
         
-        way.remove(endPosition);
+        other.way.remove(endPosition);
         way.add(point, a);        
         return false;
     }
     
-    
-    private void swapArrayList(int a, int b, ArrayList<Point> list){
-        Point aux = list.get(a);
-        list.set(a, list.get(b));
-        list.set(b, aux);
+    /**
+     * Troca 2 elementos entre os array lists
+     * @param a O índice do primeiro elemento(este array list)
+     * @param b o índice do segundo elemento(outro array list)
+     * @param other O array list
+     */
+    private void swapArrayList(int a, int b, ArrayList<Point> other){
+        Point aux = way.get(a);
+        way.set(a, other.get(b));
+        other.set(b, aux);
     }     
 }
