@@ -31,6 +31,7 @@ public class Main {
             route = createRoute(g, g.getTruckCapacity());
             routeList.add(route);
             route.show();
+            System.out.println("Carga restante: " + route.getTruck().getLoad());
         }
         
         boolean ok = routeList.get(2).reInsertion(1, 2, routeList.get(1));
@@ -62,9 +63,9 @@ public class Main {
         for(int i = 0; i < size - 1; i++)
         {
             next = current.maisProximo(graph);
-            truck.sub(next.getDemanda());
-            
-            if(truck.getLoad() <= 0)
+            if(truck.getLoad() >= next.getDemanda())
+                truck.sub(next.getDemanda());
+            else
             {
                 route.addPointIntoWay(graph.getInit());
                 break;

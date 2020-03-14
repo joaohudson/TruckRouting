@@ -139,6 +139,9 @@ public class Route {
         if(d1 < d0)
         {
             length += d1 - d0;
+            //ajusta as cargas dos caminhões
+            truck.sub(b.getDemanda() - a.getDemanda());
+            other.truck.sub(a.getDemanda() - b.getDemanda());
             return true;
         }
         
@@ -220,6 +223,9 @@ public class Route {
         
         if(d1 < d0){
             length += d1 - d0;
+            //ajusta as cargas dos caminhões
+            truck.sub(-a.getDemanda());
+            other.truck.sub(a.getDemanda());
             return true;
         }
         
