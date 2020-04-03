@@ -184,6 +184,7 @@ public class Route {
         d1 = graph.distance(a, b) + graph.distance(c, d);
         
         if(d1 < d0){
+            length += d1 - d0;
             return true;
         }
         

@@ -53,6 +53,13 @@ public class Point {
         return adjs;
     }
     
+    /**
+     * Obtém o ponto mais próximo ignorando os
+     * pontos visitados.
+     * @param graph O grafo que contém os pontos.
+     * @return O ponto mais próximo ou null, caso
+     * todos os pontos já tenha sido visitados.
+     */
     public Point maisProximo(Graph graph)
     {
         Point maisProxim = graph.getInit().getAdjs().getFirst();
@@ -65,6 +72,9 @@ public class Point {
             if(graph.distance(this, maisProxim) > graph.distance(this, point) || maisProxim.isVisited())
                 maisProxim = point;
         }
+        
+        if(maisProxim.isVisited())//todos os pontos já foram visitados
+            maisProxim = null;
         
         return maisProxim;
     }
