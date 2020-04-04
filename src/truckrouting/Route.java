@@ -72,7 +72,8 @@ public class Route {
      */
     public int getLength()
     {
-        return length;
+        return computeLength();
+        //return length;
     }
     
     public void show()
@@ -174,7 +175,7 @@ public class Route {
         
         d0 = graph.distance(a, b) + graph.distance(c, d);
         
-        swapArrayList(ay, by, way);
+        swapArrayList(ay, bx, way);
         
         a = way.get(ax);
         b = way.get(ay);
@@ -188,7 +189,7 @@ public class Route {
             return true;
         }
         
-        swapArrayList(ay, by, way);
+        swapArrayList(ay, bx, way);
         
         return false;
         
@@ -204,12 +205,14 @@ public class Route {
      */
     public boolean reInsertion(int point, int endPosition, Route other){
         
-        int d0, d1;
+        int gain0, gain1, loss0, loss1;
         
         Point a = way.get(point);
         Point al = point > 0 ? way.get(point - 1) : way.get(point);
         Point ar = point < way.size() - 1 ? way.get(point + 1) : way.get(point);
-        d0 = graph.distance(al, a) + graph.distance(a, ar);
+        gain0 = point == 0 || point == way.size() - 1 ? 0 : graph.distance(ar, al);
+        loss0 = graph.distance(ar, a) + graph.distance(al, a);
+        //d0 = graph.distance(ar, al) - (graph.distance(al, a) + graph.distance(a, ar));
         
         //carga insuficiente
         if(other.truck.getLoad() < a.getDemanda())
@@ -220,10 +223,15 @@ public class Route {
         
         al = endPosition > 0 ? other.way.get(endPosition - 1) : other.way.get(endPosition);
         ar = endPosition < other.way.size() - 1 ? other.way.get(endPosition + 1) : other.way.get(endPosition);
-        d1 = graph.distance(al, a) + graph.distance(a, ar);
+        gain1 = graph.distance(ar, a) + graph.distance(al, a);
+        loss1 = endPosition == 0 || endPosition == other.way.size() - 1 ? 0 : graph.distance(al, ar);
+        //d1 = (graph.distance(al, a) + graph.distance(a, ar)) - graph.distance(ar, al);
         
-        if(d1 < d0){
-            length += d1 - d0;
+        if(gain0 + gain1 < loss0 + loss1){
+            length += gain0 ;//- loss0;
+            length -= loss0;
+            other.length += gain1;// - loss1;
+            other.length -= loss1;
             //ajusta as cargas dos caminhões
             truck.sub(-a.getDemanda());
             other.truck.sub(a.getDemanda());
@@ -245,5 +253,21 @@ public class Route {
         Point aux = way.get(a);
         way.set(a, other.get(b));
         other.set(b, aux);
-    }     
+    }
+    
+    /**
+     * Teste
+     * @return length 
+     */
+    private int computeLength()
+    {
+        int plus = 0;
+        
+        for(int i = 1; i < way.size(); i++)
+        {
+            plus += graph.distance(way.get(i - 1), way.get(i));
+        }
+        
+        return plus;
+    }
 }
