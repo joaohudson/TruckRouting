@@ -5,8 +5,10 @@
  */
 package truckrouting;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -18,6 +20,7 @@ public class Point {
     private final int id;
     private final int demanda;
     private LinkedList<Point> adjs;
+    private LinkedList<Point> naoVisitados;
     private boolean visited;
     
     /**
@@ -32,6 +35,7 @@ public class Point {
         this.isClient = isClient;
         visited = false;
         adjs = new LinkedList<>();
+        naoVisitados = new LinkedList<>();
     }
     
     /**
@@ -42,6 +46,7 @@ public class Point {
     public void addAdj(Point point)
     {
         adjs.add(point);
+        naoVisitados.add(point);
     }
     
     /**
@@ -52,10 +57,30 @@ public class Point {
     {
         return adjs;
     }
+
+    public LinkedList<Point> naoVisitados()
+    {
+        return naoVisitados;
+    }
     
+    public void aleatorizarPontos(){
+        Collections.shuffle(this.naoVisitados);
+    }
+    
+    public void removeUltimo(){
+        this.naoVisitados.remove(this.naoVisitados.size()-1);
+    }
+    /**
+     * Obtém o ponto mais próximo ignorando os
+     * pontos visitados.
+     * @param graph O grafo que contém os pontos.
+     * @return O ponto mais próximo ou null, caso
+     * todos os pontos já tenha sido visitados.
+     */
     public Point maisProximo(Graph graph)
     {
-        Point maisProxim = graph.getInit().getAdjs().getFirst();
+        Random random = new Random();
+        Point maisProxim = graph.getInit().getAdjs().get(random.nextInt(graph.size));
         
         for(Point point : adjs)
         {
@@ -66,7 +91,18 @@ public class Point {
                 maisProxim = point;
         }
         
+        if(maisProxim.isVisited())//todos os pontos já foram visitados
+            maisProxim = null;
+        
         return maisProxim;
+    }
+
+    public Point vizinhoAleatorio(Graph graph){        
+        if(graph.getInit().naoVisitados().size() > 0){
+            Point vizinho = graph.getInit().naoVisitados().get(graph.getInit().naoVisitados().size()-1);
+            graph.getInit().removeUltimo();
+            return vizinho;
+        } else  return null;
     }
     
     public int getDemanda()
@@ -118,4 +154,6 @@ public class Point {
         
         return id == other.id;
     }
+
+
 }

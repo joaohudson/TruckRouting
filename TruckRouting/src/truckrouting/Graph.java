@@ -7,6 +7,7 @@ package truckrouting;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -19,17 +20,20 @@ public class Graph {
     private final int[][] points;
     private final Point init;
     private int truckCapacity;
-    
+    public static int size = 0;
     /**
      * Carrega um grafo de um arquivo.
      * @param dir O nome do arquivo.
      * @return O grafo carregado.
      */
+    
+    public int getSize(){
+        return this.size;
+    }
     public static Graph loadFromFile(String dir) throws IOException
     {
         File file = new File(dir);
         Scanner scan = new Scanner(file);
-        int size = 0;
         int[] demand = null;
         int[][] mat = null;
         Graph g = null;
@@ -95,7 +99,7 @@ public class Graph {
                 g.addArest(p0, p1, mat[i][j]);
             }
         }
-        
+        g.getInit().aleatorizarPontos();
         return g;
     }
     
