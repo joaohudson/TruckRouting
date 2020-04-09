@@ -16,7 +16,6 @@ public class Route {
     private final Truck truck;
     private final ArrayList<Point> way;
     private final Graph graph;
-    private int length;
     
     /**
      * Contrói uma rota.
@@ -28,7 +27,6 @@ public class Route {
         this.truck = truck;
         this.graph = graph;
         way = new ArrayList<>();
-        length = 0;
     }
     
     /**
@@ -46,8 +44,6 @@ public class Route {
      */
     public void addPointIntoWay(Point point)
     {   
-        if(!way.isEmpty())
-            length += graph.distance(way.get(way.size() - 1), point);
         way.add(point);
     }
     
@@ -72,8 +68,14 @@ public class Route {
      */
     public int getLength()
     {
-        return computeLength();
-        //return length;
+        int plus = 0;
+        
+        for(int i = 1; i < way.size(); i++)
+        {
+            plus += graph.distance(way.get(i - 1), way.get(i));
+        }
+        
+        return plus;
     }
     
     public void show()
@@ -139,7 +141,6 @@ public class Route {
         
         if(d1 < d0)
         {
-            length += d1 - d0;
             //ajusta as cargas dos caminhões
             truck.sub(b.getDemanda() - a.getDemanda());
             other.truck.sub(a.getDemanda() - b.getDemanda());
@@ -154,12 +155,10 @@ public class Route {
     /**
      * Troca os vértices de 2 arestas.
      * @param ax primeiro vértice da primeira aresta.
-     * @param ay segundo vértice da primeira aresta.
      * @param bx primeiro vértice da segunda aresta.
-     * @param by segundo vértice da segunda aresta.
      * @return se o movimento foi efetuado
      */
-    public boolean twoOpt(int ax, int ay, int bx, int by)
+    public boolean twoOpt(int ax, int bx)
     {
         Point a;
         Point b;
@@ -167,6 +166,12 @@ public class Route {
         Point d;
         
         int d0, d1;
+        //segundos vértices da primeira e segunda aresta
+        int ay = ax + 1;
+        int by = bx + 1;
+        
+        if(ax - bx >= 2)//pelomenos 2x à frente
+            return false;
         
         a = way.get(ax);
         b = way.get(ay);
@@ -175,24 +180,19 @@ public class Route {
         
         d0 = graph.distance(a, b) + graph.distance(c, d);
         
-        swapArrayList(ay, bx, way);
-        
-        a = way.get(ax);
-        b = way.get(ay);
-        c = way.get(bx);
-        d = way.get(by);
-        
-        d1 = graph.distance(a, b) + graph.distance(c, d);
+        d1 = graph.distance(a, c) + graph.distance(b, d);
         
         if(d1 < d0){
-            length += d1 - d0;
+            
+            for(int i = ay, j = bx; i < j; i++, j--)
+            {
+                swapArrayList(i, j, way);
+            }
+            
             return true;
         }
         
-        swapArrayList(ay, bx, way);
-        
         return false;
-        
     }
     
     /**
@@ -228,10 +228,6 @@ public class Route {
         //d1 = (graph.distance(al, a) + graph.distance(a, ar)) - graph.distance(ar, al);
         
         if(gain0 + gain1 < loss0 + loss1){
-            length += gain0 ;//- loss0;
-            length -= loss0;
-            other.length += gain1;// - loss1;
-            other.length -= loss1;
             //ajusta as cargas dos caminhões
             truck.sub(-a.getDemanda());
             other.truck.sub(a.getDemanda());
@@ -253,21 +249,5 @@ public class Route {
         Point aux = way.get(a);
         way.set(a, other.get(b));
         other.set(b, aux);
-    }
-    
-    /**
-     * Teste
-     * @return length 
-     */
-    private int computeLength()
-    {
-        int plus = 0;
-        
-        for(int i = 1; i < way.size(); i++)
-        {
-            plus += graph.distance(way.get(i - 1), way.get(i));
-        }
-        
-        return plus;
     }
 }

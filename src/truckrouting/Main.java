@@ -107,15 +107,9 @@ public class Main {
             
             for(int ax = 0; ax < size - 1; ax++)
             {
-                for(int ay = ax + 1; ay < size; ay++)
+                for(int bx = ax + 2; bx < size - 1; bx++)
                 {
-                    for(int bx = ay; bx < size - 1; bx++)
-                    {
-                        for(int by = bx + 1; by < size; by++)
-                        {
-                            success = route.twoOpt(ax, ay, bx, by);
-                        }
-                    }
+                    success = route.twoOpt(ax, bx);
                 }
             }
         }
@@ -141,7 +135,6 @@ public class Main {
                     for(int j = 1; j < r1.getWay().size() - 1; j++)
                     {
                         success = r0.reInsertion(i, j, r1);
-                        
                         if(success)
                         {
                             break;
