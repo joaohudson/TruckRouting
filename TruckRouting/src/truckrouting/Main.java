@@ -20,7 +20,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception{ 
-        Graph g = Graph.loadFromFile("P-n16-k8.txt");
+        Graph g = Graph.loadFromFile("P-n50-k10.txt");
         Route route;
         ArrayList<Route> routeList;
         long time;
@@ -52,9 +52,10 @@ public class Main {
             solucoesVND.add(totalLength(routeList));
             temposVND.add((double)(System.nanoTime() - time) / 1000_000_000d);
         }
+       
         double valorOtimo = g.getValorOtimo();
-        double gapConstrucao = (mediaSol(solucoesConstrucao)-valorOtimo)/valorOtimo*100;
-        double gapVND = (mediaSol(solucoesVND)-valorOtimo)/valorOtimo*100;
+        double gapConstrucao = (melhorSolucao(solucoesConstrucao)-valorOtimo)/valorOtimo*100;
+        double gapVND = (melhorSolucao(solucoesVND)-valorOtimo)/valorOtimo*100;
         
         System.out.println("Valor ótimo: " + g.getValorOtimo());
         System.out.println("Solução média construção: " + mediaSol(solucoesConstrucao));

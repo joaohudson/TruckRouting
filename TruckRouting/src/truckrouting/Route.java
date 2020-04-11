@@ -153,7 +153,7 @@ public class Route {
     }
     
     /**
-     * Troca os vértices de 2 arestas.
+     * Troca 2 arestas.
      * @param ax primeiro vértice da primeira aresta.
      * @param bx primeiro vértice da segunda aresta.
      * @return se o movimento foi efetuado
