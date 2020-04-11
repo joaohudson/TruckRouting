@@ -142,8 +142,8 @@ public class Route {
         if(d1 < d0)
         {
             //ajusta as cargas dos caminhões
-            truck.sub(b.getDemanda() - a.getDemanda());
-            other.truck.sub(a.getDemanda() - b.getDemanda());
+            truck.sub(a.getDemanda() - b.getDemanda());
+            other.truck.sub(b.getDemanda() - a.getDemanda());
             return true;
         }
         

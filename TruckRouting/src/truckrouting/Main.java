@@ -24,7 +24,6 @@ public class Main {
         Route route;
         ArrayList<Route> routeList;
         long time;
-        double duration;
         int quantIterations = 10;
         g.getInit().visit();
         List<Integer> solucoesConstrucao = new ArrayList<Integer>();
@@ -42,24 +41,16 @@ public class Main {
             
             while(g.getInit().naoVisitados().size() > 0)
             {   
-                System.out.println(g.getInit().naoVisitados());
                 route = createRandomRoute(g, g.getTruckCapacity());
                 routeList.add(route);
             }
-            System.out.println("Rotas ANTES: " + totalLength(routeList));
-            showAllRoutes(routeList);
             solucoesConstrucao.add(totalLength(routeList));
             temposConstrucao.add((double)(System.nanoTime() - time) / 1000_000_000d);
             
             vnd(routeList);
-            //System.out.println("Rotas VND: " + totalLength(routeList));
-            //showAllRoutes(routeList);
+            
             solucoesVND.add(totalLength(routeList));
             temposVND.add((double)(System.nanoTime() - time) / 1000_000_000d);
-            duration = (double)(System.nanoTime() - time) / 1000_000_000d;
-            
-            System.out.println("Total Lenght: " + totalLength(routeList));
-            //System.out.println("Duration: " + duration + 's');
         }
         double valorOtimo = g.getValorOtimo();
         double gapConstrucao = (mediaSol(solucoesConstrucao)-valorOtimo)/valorOtimo*100;

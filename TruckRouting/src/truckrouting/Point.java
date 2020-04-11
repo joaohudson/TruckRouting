@@ -6,9 +6,7 @@
 package truckrouting;
 import java.util.Collections;	
 import java.util.LinkedList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;	
+import java.util.Stack;
 /**
  *
  * @author João Hudson
@@ -20,7 +18,7 @@ public class Point {
     private final int demanda;
     private LinkedList<Point> adjs;
     private boolean visited;
-    private ArrayList<Point> naoVisitados;	
+    private Stack<Point> naoVisitados;	
 
     /**
      * Cria um ponto no grafo.
@@ -34,7 +32,6 @@ public class Point {
         this.isClient = isClient;
         visited = false;
         adjs = new LinkedList<>();
-        //naoVisitados = new ArrayList<>();
     }
     
     /**
@@ -49,8 +46,8 @@ public class Point {
     
     public void cloneAdjs()
     {
-        naoVisitados = new ArrayList<Point>(this.adjs);
-
+        naoVisitados = new Stack<>();
+        naoVisitados.addAll(adjs);//adiciona os clientes na pilha
     }
     
     /**
@@ -62,7 +59,7 @@ public class Point {
         return adjs;
     }
     
-    public ArrayList<Point> naoVisitados()
+    public Stack<Point> naoVisitados()
     {
         return naoVisitados;
     }
@@ -72,7 +69,7 @@ public class Point {
     }
     
     public void removeUltimo(){
-        this.naoVisitados.remove(this.naoVisitados.size()-1);
+        this.naoVisitados.pop();
     }
     
     /**
