@@ -119,7 +119,7 @@ public class Route {
              graph.distance(b, br) + graph.distance(b, bl);
         
         //carga insuficiente
-        if(other.truck.getLoad() < b.getDemanda() - a.getDemanda() || truck.getLoad() < a.getDemanda() - b.getDemanda())
+        if(other.truck.getLoad() < a.getDemanda() - b.getDemanda() || truck.getLoad() < b.getDemanda() - a.getDemanda())
             return false;
         
         swapArrayList(x, y, other.way);
@@ -142,8 +142,8 @@ public class Route {
         if(d1 < d0)
         {
             //ajusta as cargas dos caminhões
-            truck.sub(b.getDemanda() - a.getDemanda());
-            other.truck.sub(a.getDemanda() - b.getDemanda());
+            truck.sub(a.getDemanda() - b.getDemanda());
+            other.truck.sub(b.getDemanda() - a.getDemanda());
             return true;
         }
         
