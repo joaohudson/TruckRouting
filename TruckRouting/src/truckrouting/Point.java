@@ -101,13 +101,9 @@ public class Point {
     public Point vizinhoAleatorio(Graph graph)
     {        
         if(graph.getInit().naoVisitados().size() > 0){
-            Point vizinho = graph.getInit().naoVisitados().get(graph.getInit().naoVisitados().size()-1);
+            Point vizinho = graph.getInit().naoVisitados().peek();
             return vizinho;
         } else  return null;
-    }
-    
-    public void addListaAleatoria(Graph graph){
-        graph.getInit().removeUltimo();
     }
         
     public int getDemanda()
