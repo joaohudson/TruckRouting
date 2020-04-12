@@ -13,24 +13,19 @@ import java.util.Stack;
  */
 public class Point {
     
-    private final boolean isClient;
     private final int id;
     private final int demanda;
     private LinkedList<Point> adjs;
-    private boolean visited;
     private Stack<Point> naoVisitados;	
 
     /**
      * Cria um ponto no grafo.
      * @param id O identificador único do ponto.
-     * @param isClient Se o ponto é um client.
      */
-    public Point(int id, int demanda, boolean isClient)
+    public Point(int id, int demanda)
     {
         this.id = id;
         this.demanda = demanda;
-        this.isClient = isClient;
-        visited = false;
         adjs = new LinkedList<>();
     }
     
@@ -72,32 +67,6 @@ public class Point {
         this.naoVisitados.pop();
     }
     
-    /**
-     * Obtém o ponto mais próximo ignorando os
-     * pontos visitados.
-     * @param graph O grafo que contém os pontos.
-     * @return O ponto mais próximo ou null, caso
-     * todos os pontos já tenha sido visitados.
-     */
-    public Point maisProximo(Graph graph)
-    {
-        Point maisProxim = graph.getInit().getAdjs().getFirst();
-        
-        for(Point point : adjs)
-        {
-            if(point.isVisited())
-                continue;
-            
-            if(graph.distance(this, maisProxim) > graph.distance(this, point) || maisProxim.isVisited())
-                maisProxim = point;
-        }
-        
-        if(maisProxim.isVisited())//todos os pontos já foram visitados
-            maisProxim = null;
-        
-        return maisProxim;
-    }
-    
     public Point vizinhoAleatorio(Graph graph)
     {        
         if(graph.getInit().naoVisitados().size() > 0){
@@ -112,31 +81,12 @@ public class Point {
     }
     
     /**
-     * Se este ponto é um client.
-     * @return Se este ponto é um client.
-     */
-    public boolean isClient()
-    {
-        return isClient;
-    }
-    
-    /**
      * Obtém o identificador único deste Point
      * @return O identificador único deste Point
      */
     public int getId()
     {
         return id;
-    }
-    
-    public void visit()
-    {
-        visited = true;
-    }
-    
-    public boolean isVisited()
-    {
-        return visited;
     }
     
     @Override

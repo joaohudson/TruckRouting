@@ -18,7 +18,7 @@ public class Route {
     private final Graph graph;
     
     /**
-     * Contrói uma rota.
+     * Constrói uma rota.
      * @param truck O caminhão a ser usado na rota.
      * @param graph O grafo que contém os pontos.
      */

@@ -14,8 +14,6 @@ import java.util.List;
  */
 public class Main {
     
-    private static int visitedPoints = 1;
-    
     /**
      * @param args the command line arguments
      */
@@ -25,7 +23,6 @@ public class Main {
         ArrayList<Route> routeList;
         long time;
         int quantIterations = 10;
-        g.getInit().visit();
         List<Integer> solucoesConstrucao = new ArrayList<Integer>();
         List<Integer> solucoesVND = new ArrayList<Integer>();
         List<Double> temposConstrucao = new ArrayList<Double>();
@@ -199,37 +196,6 @@ public class Main {
         return success;
     }
     
-    private static Route createRoute(Graph graph, int truckCapacity)
-    {
-        Point current = graph.getInit();
-        Point next;
-        Truck truck = new Truck(0, truckCapacity);
-        Route route = new Route(truck, graph);
-        final int size = graph.vertexNumber();
-        
-        route.addPointIntoWay(current);
-        
-        for(int i = 0; i < size - 1; i++)
-        {
-            next = current.maisProximo(graph);
-            if(next != null && truck.getLoad() >= next.getDemanda())
-                truck.sub(next.getDemanda());
-            else
-            {
-                route.addPointIntoWay(graph.getInit());
-                break;
-            }
-            
-            route.addPointIntoWay(next);
-            next.visit();
-            visitedPoints++;
-            
-            current = next;
-        }
-        
-        return route;
-    }
-    
     private static Route createRandomRoute(Graph graph, int truckCapacity)
     {
         Point current = graph.getInit();
@@ -257,7 +223,6 @@ public class Main {
             }
             
             route.addPointIntoWay(neighbourhood);
-            neighbourhood.visit();
             
             current = neighbourhood;
 

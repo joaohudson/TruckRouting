@@ -89,7 +89,7 @@ public class Graph {
         
         for(int i = 1; i < size; i++)
         {
-            points[i] = new Point(i, demand[i], true);
+            points[i] = new Point(i, demand[i]);
         }
         
         for(int i = 0; i < size; i++)
@@ -116,7 +116,7 @@ public class Graph {
      */
     public Graph(int size)
     {
-        init = new Point(0,0, false);
+        init = new Point(0,0);
         points = new int[size][size];
     }
     
