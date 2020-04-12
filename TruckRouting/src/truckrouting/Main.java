@@ -130,7 +130,8 @@ public class Main {
             {
                 for(int bx = ax + 2; bx < size - 1; bx++)
                 {
-                    success = route.twoOpt(ax, bx);
+                    if(route.twoOpt(ax, bx))
+                        success = true;
                 }
             }
         }
@@ -155,9 +156,9 @@ public class Main {
                 {
                     for(int j = 1; j < r1.getWay().size() - 1; j++)
                     {
-                        success = r0.reInsertion(i, j, r1);
-                        if(success)
+                        if(r0.reInsertion(i, j, r1))
                         {
+                            success = true;
                             break;
                         }
                     }
@@ -187,7 +188,8 @@ public class Main {
                 {
                     for(int j = i; j < r1.getWay().size() - 1; j++)
                     {
-                        success = r0.swap(i, j, r1);
+                        if(r0.swap(i, j, r1))
+                            success = true;
                     }
                 }
             }
