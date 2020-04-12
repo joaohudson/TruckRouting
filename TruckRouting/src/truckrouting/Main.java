@@ -18,7 +18,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception{ 
-        Graph g = Graph.loadFromFile("P-n50-k10.txt");
+        Graph g = Graph.loadFromFile("P-n55-k7.txt");
         Route route;
         ArrayList<Route> routeList;
         long time;
